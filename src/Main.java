@@ -7,11 +7,13 @@ public class Main {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         ResultSetMetaData metaData = rs.getMetaData();
-        int cols = metaData.getColumnCount();
+        int cols = metaData.getColumnCount();   //get the number of columns
 
         int[] colWidths = new int[cols];
         //initialize column widths with header lengths
-        for (int i=0; i < colWidths.length; i++) {
+        for (int i=0; i < cols; i++) {
+            //note: the colWidths array has indices ranging from 0 to cols-1
+            //but the columns in the result set are labeled from 1 to cols
             colWidths[i] = metaData.getColumnLabel(i+1).length();
         }
         //loop through results to get maximum lengths in each column
@@ -57,8 +59,10 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         try {
+            //you can replace the sample database here with your own
             Connection conn = DriverManager.getConnection("jdbc:sqlite:sakila_master.db");
-            while (true) {
+            while (true) {      //repeats forever until user chooses to quit
+                //sample query
                 String sql = "SELECT f.title AS film_title, a.first_name, a.last_name "
                         + " FROM actor AS a "
                         + " INNER JOIN film_actor AS af ON af.actor_id=a.actor_id"
@@ -68,14 +72,17 @@ public class Main {
                 String s = sc.nextLine();
 
                 if (s.startsWith("1")) {
+                    //run the sample query directly
                     runSQLandPrint(sql, conn);
 
                 } else if (s.startsWith("2")) {
+                    //ask the user for a new query
                     System.out.print("Enter SQL (in one line): ");
                     sql = sc.nextLine();
                     runSQLandPrint(sql, conn);
 
                 } else if (s.startsWith("3")) {
+                    //user chose to quit, so exit the loop
                     break;
 
                 } else {
