@@ -17,9 +17,13 @@ public class Main {
         //loop through results to get maximum lengths in each column
         while (rs.next()) {
             for (int i=0; i < colWidths.length; i++) {
-                int len = rs.getString(i+1).length();
-                if (len > colWidths[i])
-                    colWidths[i] = len;
+                try {
+                    int len = rs.getString(i+1).length();
+                    if (len > colWidths[i])
+                        colWidths[i] = len;
+                } catch (NullPointerException e) {
+                    //getString() can return NULL, so ignore them
+                }
             }
         }
         //re-run query to return to the first row
@@ -41,7 +45,8 @@ public class Main {
     }
 
     public static void printMenu() {
-        System.out.print("This program demonstrates how to connect to a database (sakila in this case), ");
+        System.out.print("\nThis program demonstrates how to connect to a SQLite database ");
+        System.out.print("(the sakila database in this case), ");
         System.out.println("run a query, and display the results.");
         System.out.println("\nWhat would you like to do?");
         System.out.println("1. Run the sample query.");
